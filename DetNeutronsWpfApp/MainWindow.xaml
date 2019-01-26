@@ -1,0 +1,57 @@
+﻿<Window x:Class="DetNeutronsWpfApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DetNeutronsWpfApp"
+        xmlns:d3="clr-namespace:InteractiveDataDisplay.WPF;assembly=InteractiveDataDisplay.WPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ToolBar>
+            <Button Content="Старт" VerticalAlignment="Bottom" Click="Button_Click"/>
+            <Button Content="Стоп" Click="Button_Click_1"/>
+        </ToolBar>
+        <TabControl Grid.Row="1" x:Name="Tab">
+            <TabItem Header="Главная">
+                
+            </TabItem>
+            <TabItem Header="Развертка" Tag="2">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <Label Content="порог"/>
+                        <TextBox x:Name="TextPorog" Text="0"/>
+                        <ListView>
+                            
+                        </ListView>
+                    </StackPanel>
+                    <d3:Chart BottomTitle="Argument" LeftTitle="Function" Grid.Column="1">
+                        <d3:LineGraph x:Name="linegraph" Description="Simple linegraph" Stroke="Blue" StrokeThickness="3"/>
+                    </d3:Chart>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Параметры">
+                <StackPanel HorizontalAlignment="Left" Margin="8">
+                    <Label Content="ComPort #"/>
+                    <TextBox Text="3" x:Name="NamePort"/>
+                    <Label Content="Скорость порта" Margin="0,8,0,0"/>
+                    <TextBox Text="9600" x:Name="SpeedPort"/>
+                    <Label Margin="0,12,0,0" Content="Путь к папки для сохранения результатов"/>
+                    <TextBox Text="C:\\"/>
+                    <Button Content="Путь" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
