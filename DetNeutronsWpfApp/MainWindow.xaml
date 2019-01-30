@@ -17,8 +17,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <ToolBar Grid.ColumnSpan="2">
-            <Button Content="Старт" VerticalAlignment="Bottom" Click="Button_Click" Name="str_bt"/>
-            <Button Content="Стоп" Click="Button_Click_1" VerticalAlignment="Bottom"/>
+            <Button Content="Старт" FontSize="14" VerticalAlignment="Bottom" Click="Button_Click" Name="str_bt"/>
+            <Button Content="Стоп" FontSize="14" Click="Button_Click_1" VerticalAlignment="Bottom"/>
+            <Button Content="Тест" FontSize="14" Click="Button_Click_2" VerticalAlignment="Bottom"/>
         </ToolBar>
         <TabControl Grid.Row="1" x:Name="Tab" Grid.ColumnSpan="2">
             <TabItem Header="Главная">
@@ -76,7 +77,7 @@
                     <Label Content="Скорость порта" Margin="0,8,0,0"/>
                     <TextBox Text="19200" x:Name="SpeedPort"/>
                     <Label Margin="0,12,0,0" Content="Путь к папки для сохранения результатов"/>
-                    <TextBox Text="C:\\"/>
+                    <TextBox Text="C:\Project\" x:Name="PathText"/>
                     <Button Content="Путь" HorizontalAlignment="Left"/>
                 </StackPanel>
             </TabItem>

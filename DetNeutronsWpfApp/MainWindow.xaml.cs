@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InteractiveDataDisplay.WPF;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace DetNeutronsWpfApp
             comport.Open();//открыть порт
             comport.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);//подписаться на чтение порта
             Start_time = DateTime.Now;
+            ClassTextFile.CreatFileData("@" + PathText.Text + Start_time.Year.ToString()+"_"+ Start_time.Month.ToString()+"_" + Start_time.Day.ToString()+"_" + Start_time.Hour.ToString() + "_" + Start_time.Minute.ToString());
             lock (KEY_lock)
             {
                 KEY_lock = "1";
@@ -60,6 +62,7 @@ namespace DetNeutronsWpfApp
             {
                 KEY_lock = "0";
             }
+            ClassTextFile.CloseFileData();
 
         }
 
@@ -123,6 +126,7 @@ namespace DetNeutronsWpfApp
 
                     Count_total.Content = _Total_Count.ToString();
                     Max_Ampl.Content = _Max_Ampl.ToString();
+                    ClassTextFile.WriteFileData(DateTime.Now.ToString() + "\t" + _Max_Ampl.ToString());
 
                 }));
 
@@ -145,6 +149,73 @@ namespace DetNeutronsWpfApp
                 Thread.Sleep(1000);
                 lock (KEY_lock) { if (KEY_lock == "0") break; }
             }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+           
+            var x = Enumerable.Range(0, 1001).Select(i => i / 10.0).ToArray();
+          //   var y = x.Select(v => Math.Abs(v) < 1e-10 ? 1 : Math.Sin(v)/v).ToArray();
+            var y = new double[x.Length];
+           y[2] = 10;
+            y[3] = 10;
+            y[4] = 10;
+            y[5] = 5;
+
+            var lg = new LineGraph();
+            linegraph.Children.Add(lg);
+         
+            lg.Stroke = new SolidColorBrush(Color.FromArgb(255,36,0,255));
+            lg.Description = String.Format("Sig");
+            lg.StrokeThickness = 2;
+            lg.Plot(x, y);
+          
+            double[] y1 = new double[x.Length];
+            for(int i=0; i<x.Length; i++)
+            {
+                double t =-0.010/1.0;
+                if(i==0)
+                {
+                   
+                    y1[i] = (y[i] * (1 - (Math.Exp(t))));
+                }
+                   
+                else
+                {
+                    if (y1[i - 1] == y[i])
+                    {
+                       // t = -0.05 / 1.0;
+                        y1[i] = y[i];
+                    }
+                    else
+                    {
+
+
+                        if (y1[i - 1] < y[i])
+                        {
+                           // t = -0.05 / 1.0;
+                            y1[i] = y[i - 1] + (y[i] * (1 - (Math.Exp(t))));
+                        }
+                        else
+                        {
+                            y1[i] = y[i - 1] - (y[i] * (1 - (Math.Exp(t))));
+
+                        }
+
+
+
+                    }
+                    }
+                
+            }
+            var lg1 = new LineGraph();
+            linegraph.Children.Add(lg1);
+
+            lg1.Stroke = new SolidColorBrush(Color.FromArgb(255, 225, 0, 255));
+            lg1.Description = String.Format("SigIntegral");
+            lg1.StrokeThickness = 2;
+            lg1.Plot(x, y1);
+
         }
     }
 }
