@@ -37,7 +37,14 @@
                         <Label HorizontalAlignment="Center"  FontSize="86" Content="0" Name="Temp_Lab"/>
                         <Label HorizontalAlignment="Center" FontSize="24" Content="темп счёта"/>
                     </StackPanel>
-
+                   
+                    <Label x:Name="labTime" Grid.Column="2" FontStyle="Italic" Content="Время" FontSize="22" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <d3:Chart Grid.Row="1" BottomTitle="Амплитуда, Код АЦП" LeftTitle="N, количество амплитуд" Grid.Column="1">
+                        <d3:Chart.Title>
+                            <TextBlock HorizontalAlignment="Center" FontSize="18" Margin="0,5,0,5">Спект амплитуд</TextBlock>
+                        </d3:Chart.Title>
+                        <d3:BarGraph Name="barChart" Color="Blue"/>
+                    </d3:Chart>
                     <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" >
                         <Label HorizontalAlignment="Center"  FontSize="62" Content="0" Name="Max_Ampl"/>
                         <Label HorizontalAlignment="Center" FontSize="14" Content="Максимальная амплитуда"/>
