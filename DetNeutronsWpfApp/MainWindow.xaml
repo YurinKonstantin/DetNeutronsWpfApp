@@ -65,8 +65,8 @@
 
                         </ListView>
                     </StackPanel>
-                    <d3:Chart BottomTitle="Argument" LeftTitle="Function" Grid.Column="1">
-                        <d3:LineGraph x:Name="linegraph" Description="Simple linegraph" Stroke="Blue" StrokeThickness="3"/>
+                    <d3:Chart BottomTitle="отсчеты, 10нс/отс." LeftTitle="Амплитуда, код АЦП" Grid.Column="1">
+                        <d3:LineGraph x:Name="linegraph" Description="Развертка сигнала" Stroke="Blue" StrokeThickness="3"/>
                     </d3:Chart>
                 </Grid>
             </TabItem>
