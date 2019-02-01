@@ -8,8 +8,8 @@ namespace DetNeutronsWpfApp
 {
   static public class ClassFilterSig
     {
-       static double Dacc = 0;
-      static double Dout = 0;
+       static public double Dacc = 0;
+      static public double Dout = 0;
         static public double Filtr(double data, double K)
         {
             //K - RC*дискритизаци АЦП

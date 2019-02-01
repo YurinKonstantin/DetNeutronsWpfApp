@@ -21,7 +21,7 @@ namespace DetNeutronsWpfApp
 
                 //File.Create(nameFile);
                // file = new StreamWriter(nameFile+".txt");
-               file1 = new FileStream(nameFile + ".txt", FileMode.Append);
+               file1 = new FileStream(nameFile + ".txt", FileMode.Create);
                fnew = new StreamWriter(file1, Encoding.GetEncoding(1251));
 
 
@@ -45,7 +45,7 @@ namespace DetNeutronsWpfApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка записи текста");
+             //   MessageBox.Show("Ошибка записи текста");
             }
         }
         static public void CloseFileData()//закрываем файл
