@@ -97,26 +97,27 @@ namespace DetNeutronsWpfApp
         double t = 100;
         private void port_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-          
-                // прочитали строку
-                dataR += comport.ReadLine();
+            byte[] buf = new byte[100];
+            // прочитали строку
+            int countByte= comport.Read(buf, 0, 100);
                 //  MessageBox.Show(dataR);
 
-                if (dataR.Contains("end"))
+                if (countByte>0)
                 {
+               // MessageBox.Show("FFF");
                 //ToDo сохраняем в файл строку
                 try
                 {
 
 
                     //обрабатываем данные, определяем нейтрон, считаем темп счета
-                    string[] str = dataR.Split('e');//убираем флаг конца данных 
-                    int[] Data = ConvertStrinMas(str[0].Split('\t'));//Получаем масив точек
-                    _Max_Ampl = Data.Max() - 170;
+                 
+            
+                    _Max_Ampl = buf.Max() - 170;
                     _Total_Count++;
                     Tab.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => //использую инвок для вызова перерисовки из не родного потока
                     {
-                        if (Data.Max() >= Convert.ToInt32(TextPorog.Text))//если максимальное значение больше или равно порогу, то строим график
+                        if (buf.Max() >= Convert.ToInt32(TextPorog.Text))//если максимальное значение больше или равно порогу, то строим график
                         {
 
                             // linegraph.Children.Clear();
@@ -125,15 +126,15 @@ namespace DetNeutronsWpfApp
                             {
                                 try
                                 {
-                                    int[] x = new int[Data.Length];//точки по x
-                                    for (int i = 0; i < Data.Length; i++)
+                                    int[] x = new int[buf.Length];//точки по x
+                                    for (int i = 0; i < buf.Length; i++)
                                     {
                                         x[i] = i;
 
                                     }
 
 
-                                    linegraph.Plot(x, Data); //строим график
+                                    linegraph.Plot(x, buf); //строим график
 
                                     /*  double[] y1 = new double[x.Length];
                                       ClassFilterSig.Dacc = Data[0];
@@ -171,7 +172,7 @@ namespace DetNeutronsWpfApp
                     }));
                     Count_total.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { Count_total.Content = _Total_Count.ToString(); }));
                     Max_Ampl.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { Max_Ampl.Content = _Max_Ampl.ToString(); }));
-                    yBar[Data.Max()]++;
+                    yBar[buf.Max()]++;
                     barChart.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { barChart.PlotBars(yBar); }));
 
                     dataR = String.Empty;
@@ -244,6 +245,8 @@ namespace DetNeutronsWpfApp
             lg1.StrokeThickness = 2;
             lg1.Plot(x, y1);
             //barChart.PlotBars(y);
+          
+
 
         }
     }
