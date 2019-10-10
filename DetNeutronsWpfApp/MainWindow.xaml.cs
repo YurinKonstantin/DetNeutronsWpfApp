@@ -97,89 +97,100 @@ namespace DetNeutronsWpfApp
         double t = 100;
         private void port_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            byte[] buf = new byte[100];
             // прочитали строку
-            int countByte= comport.Read(buf, 0, 100);
+            if(comport.BytesToRead>99)
+            {
+
+                byte[] buf = new byte[100];
+                int countByte= comport.Read(buf, 0, 100);
+              
                 //  MessageBox.Show(dataR);
 
-                if (countByte>0)
+                if (countByte > 0)
                 {
-               // MessageBox.Show("FFF");
-                //ToDo сохраняем в файл строку
-                try
-                {
-
-
-                    //обрабатываем данные, определяем нейтрон, считаем темп счета
-                 
-            
-                    _Max_Ampl = buf.Max() - 170;
-                    _Total_Count++;
-                    Tab.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => //использую инвок для вызова перерисовки из не родного потока
+                    byte[] bufcount = new byte[countByte];
+                    // MessageBox.Show("FFF");
+                    //ToDo сохраняем в файл строку
+                    try
                     {
-                        if (buf.Max() >= Convert.ToInt32(TextPorog.Text))//если максимальное значение больше или равно порогу, то строим график
+
+
+                        //обрабатываем данные, определяем нейтрон, считаем темп счета
+
+
+                        _Max_Ampl = buf.Max() - 170;
+                        if (_Max_Ampl > 0)
                         {
 
-                            // linegraph.Children.Clear();
-
-                            if (Tab.SelectedIndex == 1)//если выбрана вкладка "Развертка", то строим график
+                           // MessageBox.Show(_Max_Ampl.ToString());
+                            _Total_Count++;
+                            Tab.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => //использую инвок для вызова перерисовки из не родного потока
                             {
-                                try
+                                if (buf.Max() >= Convert.ToInt32(TextPorog.Text))//если максимальное значение больше или равно порогу, то строим график
+                            {
+
+                                // linegraph.Children.Clear();
+
+                                if (Tab.SelectedIndex == 1)//если выбрана вкладка "Развертка", то строим график
                                 {
-                                    int[] x = new int[buf.Length];//точки по x
-                                    for (int i = 0; i < buf.Length; i++)
-                                    {
-                                        x[i] = i;
+                                        try
+                                        {
+                                            int[] x = new int[buf.Length];//точки по x
+                                        for (int i = 0; i < buf.Length; i++)
+                                            {
+                                                x[i] = i;
 
+                                            }
+
+
+                                            linegraph.Plot(x, buf); //строим график
+
+                                        /*  double[] y1 = new double[x.Length];
+                                          ClassFilterSig.Dacc = Data[0];
+                                          ClassFilterSig.Dout= Data[0];
+                                          for (int i = 0; i < x.Length; i++)
+                                          {
+
+
+
+                                              y1[i] = ClassFilterSig.Filtr(Data[i], t);
+
+
+
+
+                                          }
+                                         // var lg1 = new LineGraph();
+
+                                        //  linegraph.Children.Add(lg1);
+
+                                        //  lg1.Stroke = new SolidColorBrush(Color.FromArgb(255, 225, 0, 255));
+                                         // lg1.Description = String.Format("SigIntegral");
+                                        //  lg1.StrokeThickness = 2;
+                                       //   lg1.Plot(x, y1);
+                                       */
+
+                                        }
+                                        catch (Exception ex) { MessageBox.Show("ошибка " + ex.Message); }
                                     }
-
-
-                                    linegraph.Plot(x, buf); //строим график
-
-                                    /*  double[] y1 = new double[x.Length];
-                                      ClassFilterSig.Dacc = Data[0];
-                                      ClassFilterSig.Dout= Data[0];
-                                      for (int i = 0; i < x.Length; i++)
-                                      {
-
-
-
-                                          y1[i] = ClassFilterSig.Filtr(Data[i], t);
-
-
-
-
-                                      }
-                                     // var lg1 = new LineGraph();
-
-                                    //  linegraph.Children.Add(lg1);
-
-                                    //  lg1.Stroke = new SolidColorBrush(Color.FromArgb(255, 225, 0, 255));
-                                     // lg1.Description = String.Format("SigIntegral");
-                                    //  lg1.StrokeThickness = 2;
-                                   //   lg1.Plot(x, y1);
-                                   */
-
                                 }
-                                catch (Exception ex) { MessageBox.Show("ошибка " + ex.Message); }
-                            }
+
+
+
+                                ClassTextFile.WriteFileData(DateTime.Now.ToString() + "\t" + _Max_Ampl.ToString());
+
+                            }));
+                            Count_total.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { Count_total.Content = _Total_Count.ToString(); }));
+                            Max_Ampl.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { Max_Ampl.Content = _Max_Ampl.ToString(); }));
+                            yBar[buf.Max()]++;
+                            barChart.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { barChart.PlotBars(yBar); }));
+
+                            dataR = String.Empty;
                         }
-
-
-
-                        ClassTextFile.WriteFileData(DateTime.Now.ToString() + "\t" + _Max_Ampl.ToString());
-
-                    }));
-                    Count_total.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { Count_total.Content = _Total_Count.ToString(); }));
-                    Max_Ampl.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { Max_Ampl.Content = _Max_Ampl.ToString(); }));
-                    yBar[buf.Max()]++;
-                    barChart.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() => { barChart.PlotBars(yBar); }));
-
-                    dataR = String.Empty;
-                }
-                catch(Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString());
+                    }
                 }
                 }
 
